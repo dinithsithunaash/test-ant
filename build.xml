@@ -1,85 +1,78 @@
 <project name="myapp" default="build" xmlns:sonar="antlib:org.sonarsource.scanner.ant">
-  <property name="src.dir" value="src"/>
-  <property name="build.dir" value="build"/>
-  <property name="dist.dir" value="dist"/>
-  <property name="web.dir" value="${build.dir}/web"/>
-  <property name="jar.name" value="myapp.jar"/>
-  <property name="war.name" value="AntTest.war"/>
-	
-	<property name="sonar.host.url" value="http://localhost:9000"/>
-	  <property name="sonar.login" value="admin"/>
-	  <property name="sonar.password" value="Mafiagang123."/>
-	  <property name="sonar.projectKey" value="Ant-analysis"/>
-	  <property name="sonar.projectName" value="myapp"/>
-	  <property name="sonar.projectVersion" value="1.0"/>
-	  <property name="sonar.sources" value="src"/>
-	  <property name="sonar.language" value="java"/>
-	  <property name="sonar.sourceEncoding" value="UTF-8"/>
-	
-  <!-- Clean target: delete build and dist directories -->
-  <target name="clean">
-    <delete dir="${build.dir}"/>
-    <delete dir="${dist.dir}"/>
-  </target>
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="web.dir" value="${build.dir}/web"/>
+	<property name="jar.name" value="myapp.jar"/>
+	<property name="war.name" value="AntTest.war"/>
 
-  <!-- Build target: compile the code and create the web directory -->
-  <target name="build" depends="clean">
-    <!-- Compile the Java code -->
-    <mkdir dir="${build.dir}/classes"/>
-    <javac srcdir="${src.dir}" destdir="${build.dir}/classes"/>
+	<!-- Clean target: delete build and dist directories -->
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+	</target>
 
-    <!-- Copy the web files to the web directory -->
-    <mkdir dir="${web.dir}"/>
-    <copy todir="${web.dir}">
-      <fileset dir="src/main/webapp"/>
-    </copy>
-  </target>
+	<!-- Build target: compile the code and create the web directory -->
+	<target name="build" depends="clean">
+		<!-- Compile the Java code -->
+		<mkdir dir="${build.dir}/classes"/>
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes"/>
 
-  <!-- WAR target: create the WAR file in the dist directory -->
-  <target name="war" depends="build">
-    <!-- Create the dist.dir if it doesn't exist -->
-    <mkdir dir="${dist.dir}"/>
+		<!-- Copy the web files to the web directory -->
+		<mkdir dir="${web.dir}"/>
+		<copy todir="${web.dir}">
+			<fileset dir="src/main/webapp"/>
+		</copy>
+	</target>
 
-    <!-- Create the WAR file -->
-    <war destfile="${dist.dir}/${war.name}" webxml="${web.dir}/WEB-INF/web.xml">
-      <fileset dir="${web.dir}">
-        <include name="**/*.*"/>
-      </fileset>
-    </war>
-  </target>
+	<!-- WAR target: create the WAR file in the dist directory -->
+	<target name="war" depends="build">
+		<!-- Create the dist.dir if it doesn't exist -->
+		<mkdir dir="${dist.dir}"/>
 
-  <!-- JAR target: create the JAR file in the dist directory -->
-  <target name="jar" depends="build">
-    <!-- Create the dist.dir if it doesn't exist -->
-    <mkdir dir="${dist.dir}"/>
+		<!-- Create the WAR file -->
+		<war destfile="${dist.dir}/${war.name}" webxml="${web.dir}/WEB-INF/web.xml">
+			<fileset dir="${web.dir}">
+				<include name="**/*.*"/>
+			</fileset>
+		</war>
+	</target>
 
-    <!-- Create the JAR file -->
-    <jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}/classes">
-      <manifest>
-        <attribute name="Main-Class" value="com.example.myapp.Main"/>
-      </manifest>
-    </jar>
-  </target>
-  	
-	<taskdef uri="antlib:org.sonarsource.scanner.ant" resource="org/sonarsource/scanner/ant/antlib.xml">
-	    <classpath path="*"/>
-	  </taskdef>
+	<!-- JAR target: create the JAR file in the dist directory -->
+	<target name="jar" depends="build">
+		<!-- Create the dist.dir if it doesn't exist -->
+		<mkdir dir="${dist.dir}"/>
 
-	  <target name="sonar">
-	    <sonar:sonar />
-	  </target>
+		<!-- Create the JAR file -->
+		<jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.example.myapp.Main"/>
+			</manifest>
+		</jar>
+	</target>
 
-	
+	<!-- ========= Define SonarQube Scanner for Ant Target ========= -->
+	<target name="sonar" depends="build">
+		<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+			<!-- Update the following line, or put the "sonar-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+			<classpath path="*" />
+		</taskdef>
+		<!-- Execute SonarQube Scanner for Ant Analysis -->
+		<sonar:sonar />
+	</target>
+
+
+
 	<!-- Define the classpath, which includes the JAR file containing the Java class you want to run -->
 	<path id="classpath">
-	  <fileset dir="${dist.dir}">
-	    <include name="*.war" />
-	  </fileset>
+		<fileset dir="${dist.dir}">
+			<include name="*.war" />
+		</fileset>
 	</path>
 
 	<!-- Define the `java` task to run the Java class -->
 	<target name="run-java-file">
-	  <java classname="App" classpathref="classpath" fork="true" />
+		<java classname="App" classpathref="classpath" fork="true" />
 	</target>
 
 </project>
