@@ -51,20 +51,17 @@
     </jar>
   </target>
 
-	<taskdef uri="antlib:org.sonarsource.scanner.ant" resource="org/sonarsource/scanner/ant/antlib.xml">
-	    <classpath path="path/to/sonar-runner-2.6.jar" />
-	</taskdef>
+	<!-- ========= Define SonarQube Scanner for Ant Target ========= -->
+	        <target name="sonar" depends="build">
+	                         <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+	                             <!-- Update the following line, or put the "sonar-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+	                             <classpath path="/usr/share/ant/lib/sonarqube-ant-task-*.jar" />
+	                        </taskdef>
+	                <!-- Execute SonarQube Scanner for Ant Analysis -->
+	               <!-- <sonar:sonar />-->
+	        </target>
 	
-	<target name="sonar">
-	    <sonar:sonar
-	      key="my:project"
-	      version="1.0"
-	      xmlns:sonar="antlib:org.sonarsource.scanner.ant">
-	      <sources dir="src" />
-	      <property key="sonar.host.url" value="http://localhost:9000" />
-	      <property key="sonar.login" value="sqp_5d1242fd9e0ea3390c257d8604e7c89d3d3e3212" />
-	    </sonar:sonar>
-	  </target>
+	
 	
 	<!-- Define the classpath, which includes the JAR file containing the Java class you want to run -->
 	<path id="classpath">
