@@ -1,11 +1,21 @@
-<project name="myapp" default="build">
+<project name="myapp" default="build" xmlns:sonar="antlib:org.sonarsource.scanner.ant">
   <property name="src.dir" value="src"/>
   <property name="build.dir" value="build"/>
   <property name="dist.dir" value="dist"/>
   <property name="web.dir" value="${build.dir}/web"/>
   <property name="jar.name" value="myapp.jar"/>
   <property name="war.name" value="AntTest.war"/>
-
+	
+	<property name="sonar.host.url" value="http://localhost:9000"/>
+	  <property name="sonar.login" value="admin"/>
+	  <property name="sonar.password" value="Mafiagang123."/>
+	  <property name="sonar.projectKey" value="Ant-analysis"/>
+	  <property name="sonar.projectName" value="myapp"/>
+	  <property name="sonar.projectVersion" value="1.0"/>
+	  <property name="sonar.sources" value="src"/>
+	  <property name="sonar.language" value="java"/>
+	  <property name="sonar.sourceEncoding" value="UTF-8"/>
+	
   <!-- Clean target: delete build and dist directories -->
   <target name="clean">
     <delete dir="${build.dir}"/>
@@ -50,18 +60,15 @@
       </manifest>
     </jar>
   </target>
+  	
+	<taskdef uri="antlib:org.sonarsource.scanner.ant" resource="org/sonarsource/scanner/ant/antlib.xml">
+	    <classpath path="*"/>
+	  </taskdef>
 
-	<!-- ========= Define SonarQube Scanner for Ant Target ========= -->
-	        <target name="sonar" depends="build">
-	                         <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
-	                             <!-- Update the following line, or put the "sonar-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
-	                             <classpath path="/usr/share/ant/lib/sonarqube-ant-task-*.jar" />
-	                        </taskdef>
-	                <!-- Execute SonarQube Scanner for Ant Analysis -->
-	               <!-- <sonar:sonar />-->
-	        </target>
-	
-	
+	  <target name="sonar">
+	    <sonar:sonar />
+	  </target>
+
 	
 	<!-- Define the classpath, which includes the JAR file containing the Java class you want to run -->
 	<path id="classpath">
